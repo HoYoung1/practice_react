@@ -13,6 +13,7 @@ import CreateContent from "./components/CreateContent";
 class App extends Component {
   constructor(props) {
     super(props)
+    this.max_contents_id = 2;
     this.state = {
       mode: 'create',
       welcome: { title: 'WEB', sub: 'World wide Web!' },
@@ -49,6 +50,12 @@ class App extends Component {
     } else if (this.state.mode === 'create') {
       _article = <CreateContent onSubmit={function(_title,_desc){
         console.log(_title,_desc)
+        this.max_contents_id +=1
+        var _data = {id:this.max_contents_id,title:_title,desc:_desc};
+        var _contents = this.state.contents.concat(_data);
+        this.setState({
+          contents:_contents
+        })
       }.bind(this)}></CreateContent>
     }
 
