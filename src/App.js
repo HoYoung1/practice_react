@@ -5,6 +5,7 @@ import ReadContent from "./components/ReadContent";
 import TOC from "./components/TOC";
 import Control from "./components/Control";
 import CreateContent from "./components/CreateContent";
+import UpdateContent from "./components/UpdateContent";
 
 
 
@@ -12,7 +13,7 @@ import CreateContent from "./components/CreateContent";
 
 class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.max_contents_id = 2;
     this.state = {
       mode: 'create',
@@ -36,8 +37,7 @@ class App extends Component {
 
     }
   }
-
-  render() {
+  getContent(){
     var _title, _desc,_article = null;
     if (this.state.mode === 'welcome') {
       _title = this.state.welcome.title;
@@ -54,11 +54,33 @@ class App extends Component {
         var _data = {id:this.max_contents_id,title:_title,desc:_desc};
         var _contents = this.state.contents.concat(_data);
         this.setState({
-          contents:_contents
+          contents:_contents,
+          mode : 'read',
+          selected_id:this.max_contents_id
         })
       }.bind(this)}></CreateContent>
+    }else if (this.state.mode === 'update') {
+      var _data = this.state.contents[this.state.selected_id];
+      _article = <UpdateContent data = {_data} onSubmit={function(_id,_title,_desc){
+        console.log(_id,_title,_desc)
+        var _data = {id:_id,title:_title,desc:_desc};
+        var _contents = Array.from(this.state.contents);
+        console.log("_contents : ",_contents);
+        _contents[_id] = _data;
+        
+        this.setState({
+            contents:_contents,
+            mode:'read'
+        })
+        console.log("contents : ",this.state.contents);
+      }.bind(this)}></UpdateContent>
     }
+    return _article;
+  }
 
+  render() {
+    
+    
     console.log("App render");
     return (
       <div className="App">
@@ -87,7 +109,7 @@ class App extends Component {
         <Control onChangeMode={function(_mode){
             this.setState({mode:_mode});
         }.bind(this)}></Control>
-        {_article}
+        {this.getContent()}
         
         
       </div>
