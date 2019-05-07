@@ -16,7 +16,7 @@ class App extends Component {
     super(props);
     this.max_contents_id = 2;
     this.state = {
-      mode: 'create',
+      mode: 'welcome',
       welcome: { title: 'WEB', sub: 'World wide Web!' },
       subject: {
         title: "WEB",
@@ -60,6 +60,7 @@ class App extends Component {
         })
       }.bind(this)}></CreateContent>
     }else if (this.state.mode === 'update') {
+      console.log('셀렉티드 아이디?',this.state.selected_id);
       var _data = this.state.contents[this.state.selected_id];
       _article = <UpdateContent data = {_data} onSubmit={function(_id,_title,_desc){
         console.log(_id,_title,_desc)
@@ -70,7 +71,8 @@ class App extends Component {
         
         this.setState({
             contents:_contents,
-            mode:'read'
+            mode:'welcome',
+            selected_id :0 
         })
         console.log("contents : ",this.state.contents);
       }.bind(this)}></UpdateContent>
@@ -107,7 +109,22 @@ class App extends Component {
           }.bind(this)}
           data={this.state.contents}></TOC>
         <Control onChangeMode={function(_mode){
+          if(_mode==='delete'){
+            if(window.confirm('really?')){
+              var _contents = Array.from(this.state.contents);
+              _contents.splice(this.state.selected_id,1);
+              this.setState({
+                contents : _contents,
+                mode: 'welcome'
+              })
+              alert('deleted');
+              
+            }
+          }
+          else{
             this.setState({mode:_mode});
+          }
+          
         }.bind(this)}></Control>
         {this.getContent()}
         
